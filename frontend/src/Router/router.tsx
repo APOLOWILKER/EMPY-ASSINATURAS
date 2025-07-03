@@ -1,6 +1,6 @@
+import { AccessPlans } from '@/pages/AccessPlans'
 import { createBrowserRouter } from 'react-router-dom'
 import { App } from '../App'
-import { AccessPlans } from '../pages/AcessPlans'
 import { MyPlan } from '../pages/MyPlan'
 import { Payment } from "../pages/PaymentFlow"
 

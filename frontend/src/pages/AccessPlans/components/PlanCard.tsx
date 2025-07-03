@@ -1,4 +1,4 @@
-import { PlanCardProps, PlanCardSchema } from '../../../schemas/planCardSchemas';
+import { PlanCardProps, PlanCardSchema } from '@/pages/AccessPlans/schemas/planCardSchemas';
 
 export function PlanCard(props: PlanCardProps) {
   // Validação das props

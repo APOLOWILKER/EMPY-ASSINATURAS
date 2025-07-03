@@ -1,17 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
-import PlanAccessPage from './pages/PlanAccessPage';
+import { Outlet } from 'react-router-dom';
 
-function App() {
+export function App() {
   return (
-    <Routes>
-      <Route path="/" element={<PlanAccessPage />} />
-      {/* Add more routes here as needed */}
-      {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
-      {/* <Route path="/my-plan" element={<MyPlanPage />} /> */}
-      {/* <Route path="/receipt" element={<ReceiptPage />} /> */}
-      {/* <Route path="/admin/plans" element={<AdminPlansPage />} /> */}
-    </Routes>
+    <div className="app-container">
+      {/* Outlet renderizará as páginas filhas */}
+      <Outlet />
+    </div>
   );
 }
-
-export default App;

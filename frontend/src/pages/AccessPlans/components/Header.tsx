@@ -1,21 +1,23 @@
+// src/pages/AccessPlans/components/Header.tsx
+import headerAccessPlan from '@/assets/HeaderAccessPlan.svg';
+import logoHorizontal from '@/assets/logoHorizontal.svg';
+
 export function Header() {
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <button className="text-gray-600 hover:text-gray-900">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
+        <button className=" text-gray-700 font-semibold py-2  px-4 rounded-full border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-opacity-75 transition-colors">
+          voltar
         </button>
         <img 
-          src="/assets/logoHorizontal.svg" 
+          src={logoHorizontal} 
           alt="Logo"
           className="h-8"
         />
-        <div className="w-6"></div> {/* Espaço vazio para alinhamento */}
+        <div className="w-6"></div>
       </div>
       <img 
-        src="/assets/HeaderAccessPlan.svg" 
+        src={headerAccessPlan} 
         alt="Header"
         className="w-full h-auto"
       />

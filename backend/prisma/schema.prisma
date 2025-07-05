@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,4 +6,102 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// Tabela : Planos
+model Plan {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  monthlyValue    Decimal? @map("monthly_value")
+  annualValue     Decimal? @map("annual_value")
+  discountPercent Int?     @map("discount_percent") // Porcentagem de desconto (para planos personalizados)
+  onlineCredits   Int      @map("online_credits") // Número de créditos online
+  offlineCredits  Int      @map("offline_credits") // Número de créditos offline (-1 para ilimitado, ou um grande valor)
+  isActive        Boolean  @default(true) // Se o plano está ativo para novas assinaturas
+  isCustom        Boolean  @default(false) // Indica se é um plano base (false) ou personalizado (true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subscriptions   Subscription[]
+  purchaseHistory PurchaseHistory[]
+
+  @@map("plans")
+}
+
+// Table: Users
+model User {
+  id    String  @id @default(uuid())
+  name  String?
+  email String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subscriptions   Subscription[]
+  purchaseHistory PurchaseHistory[]
+
+  @@map("users")
+}
+
+// Table: Subscriptions
+model Subscription {
+  id             String             @id @default(uuid())
+  userId         String             @map("user_id") // Foreign key for User
+  planId         String             @map("plan_id") // Foreign key for Plan
+  isMonthly      Boolean            @default(true) @map("is_monthly")
+  status         SubscriptionStatus
+  startDate      DateTime           @default(now()) @map("start_date")
+  endDate        DateTime?          @map("end_date")
+  lastChargeDate DateTime?          @map("last_charge_date") // Data do último pagamento
+  paymentMethod  String?            @map("payment_method") // Método de pagamento utilizado
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  PENDING
+}
+
+// Table: PurchaseHistory
+model PurchaseHistory {
+  id              String        @id @default(uuid())
+  userId          String        @map("user_id")
+  planId          String        @map("plan_id")
+  operationType   OperationType @map("operation_type") // Uses the 'OperationType' Enum below
+  paidValue       Decimal       @map("paid_value")
+  paymentStatus   PaymentStatus @map("payment_status") // Uses the 'PaymentStatus' Enum below
+  transactionDate DateTime      @default(now()) @map("transaction_date")
+  receiptUrl      String?       @map("receipt_url")
+  notes           String?
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@map("purchase_history")
+}
+
+// Enum for 'operationType' field in the PurchaseHistory table
+enum OperationType {
+  PURCHASE
+  UPGRADE
+  DOWNGRADE
+}
+
+// Enum for 'paymentStatus' field in the PurchaseHistory table
+enum PaymentStatus {
+  PAID
+  REJECTED_INSUFFICIENT_FUNDS // Recusado - Sem limite (conforme protótipo)
+  UNAUTHORIZED // Não autorizado (conforme protótipo)
+  GENERAL_FAILURE // Falha geral (outros erros de pagamento)
+  PENDING // Pagamento pendente (ex: processando)
 }

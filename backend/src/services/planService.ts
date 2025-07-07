@@ -77,12 +77,12 @@ export const listAllPlansForManagement = async () => {
  * @returns {Promise<Plan>} Uma Promise que resolve para o objeto Plan criado.
  * @throws {Error} Lança um erro se houver falha na criação ou violação de unicidade (nome).
  */
-export const createPlan = async (planData: CreatePlanDTO) => { // <--- NOVA FUNÇÃO AQUI
+export const createPlan = async (planData: CreatePlanDTO) => { 
   try {
-    // Lógica para herdar créditos ou outras configurações do plano base, se 'planBaseId' for fornecido
+    
     let finalOnlineCredits = planData.onlineCredits;
     let finalOfflineCredits = planData.offlineCredits;
-    let finalIsCustom = planData.isCustom ?? true; // Default para true se não fornecido
+    let finalIsCustom = planData.isCustom ?? true;
 
     if (planData.planBaseId) {
       const basePlan = await prisma.plan.findUnique({
@@ -93,16 +93,14 @@ export const createPlan = async (planData: CreatePlanDTO) => { // <--- NOVA FUN�
       if (!basePlan) {
         throw new Error('Plano base não encontrado.');
       }
-      // Se não foram fornecidos créditos específicos, herda do plano base
+      
       finalOnlineCredits = planData.onlineCredits ?? basePlan.onlineCredits;
       finalOfflineCredits = planData.offlineCredits ?? basePlan.offlineCredits;
-      // Se o plano base é base (isCustom=false), e o novo plano é criado baseado nele,
-      // o novo plano ainda é considerado customizado, a menos que explicitamente sobrescrito.
+    
       finalIsCustom = planData.isCustom ?? true;
     }
 
-    // Se os créditos ainda não foram definidos (nem por input, nem por plano base), use um default
-    // Assumimos que todo plano tem créditos, mesmo que zero.
+    
     if (finalOnlineCredits === undefined || finalOnlineCredits === null) {
       finalOnlineCredits = 0;
     }
@@ -118,8 +116,8 @@ export const createPlan = async (planData: CreatePlanDTO) => { // <--- NOVA FUN�
         monthlyValue: planData.monthlyValue,
         annualValue: planData.annualValue,
         discountPercent: planData.discountPercent,
-        onlineCredits: finalOnlineCredits, // Usa o valor final (input ou herdado ou default)
-        offlineCredits: finalOfflineCredits, // Usa o valor final
+        onlineCredits: finalOnlineCredits, 
+        offlineCredits: finalOfflineCredits,
         isActive: planData.isActive,
         isCustom: finalIsCustom,
       },
@@ -127,9 +125,67 @@ export const createPlan = async (planData: CreatePlanDTO) => { // <--- NOVA FUN�
     return newPlan;
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta?.target?.includes('name')) {
-      throw new Error('Já existe um plano com este nome.'); // Erro de unicidade do Prisma
+      throw new Error('Já existe um plano com este nome.'); 
     }
     console.error('Erro no serviço `createPlan` ao criar plano:', error);
     throw new Error('Falha ao criar o plano de assinatura.');
+  }
+};
+
+
+/**
+ * @function getUserCurrentPlan
+ * @description Busca o plano de assinatura ativo atual de um usuário específico.
+ * @param {string} userId - O ID único do usuário.
+ * @returns {Promise<any | null>} Uma Promise que resolve para o plano ativo do usuário (Subscription com Plan), ou null se não houver.
+ * @throws {Error} Lança um erro se houver falha na comunicação com o banco de dados.
+ */
+export const getUserCurrentPlan = async (userId: string) => { 
+  try {
+    const currentSubscription = await prisma.subscription.findFirst({
+      where: {
+        userId: userId,
+        status: 'ACTIVE',
+      },
+      orderBy: {
+        startDate: 'desc',
+      },
+      select: { 
+        id: true,
+        isMonthly: true,
+        status: true,
+        startDate: true,
+        endDate: true,
+        lastChargeDate: true,
+        paymentMethod: true,
+        plan: { 
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            monthlyValue: true,
+            annualValue: true,
+            onlineCredits: true,
+            offlineCredits: true,
+          },
+        },
+        user: { 
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (currentSubscription) {
+      return currentSubscription;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(`Erro no serviço 'getUserCurrentPlan' para o usuário ${userId}:`, error);
+    throw new Error('Falha ao buscar o plano atual do usuário.');
   }
 };

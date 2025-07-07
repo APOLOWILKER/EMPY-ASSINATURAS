@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { PrismaClient } from "./generated/prisma";
 import planRoutes from './routes/planRoutes';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(cors());
 const PORT = process.env.PORT || 3001;
 
 app.use('/plans', planRoutes);
+app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('API da Empy Assinaturas está funcionando!');

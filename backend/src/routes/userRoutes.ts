@@ -1,7 +1,5 @@
-// backend/src/routes/userRoutes.ts
-
 import { Router } from 'express';
-import { getUserCurrentPlan } from '../controllers/userController';
+import { createPurchase, getUserCurrentPlan } from '../controllers/userController';
 
 const router = Router();
 
@@ -12,5 +10,10 @@ const router = Router();
  */
 router.get('/:userId/plan', getUserCurrentPlan)
 
+/**
+ * @route POST /users/:userId/purchase
+ * @description Rota para processar a compra de um plano de assinatura.
+ */
+router.post('/:userId/purchase', createPurchase);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPlan, getPlans, getPlansForManagement, getUserCurrentPlan } from '../controllers/planController';
+import { createPlan, getPlans, getPlansForManagement } from '../controllers/planController';
 
 const router = Router();
 
@@ -22,12 +22,6 @@ router.get('/management', getPlansForManagement);
  */
 router.post('/management', createPlan);
 
-
-/**
- * @route GET /plans/:id
- * @description Rota para obter detalhes de um plano específico por ID.
- */
-router.get('/:userId/plan', getUserCurrentPlan)
 
 
 export default router;

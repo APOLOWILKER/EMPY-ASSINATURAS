@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getPlans, getPlansForManagement } from '../controllers/planController';
+import { createPlan, getPlans, getPlansForManagement } from '../controllers/planController';
 
 const router = Router();
 
@@ -14,6 +14,12 @@ router.get('/', getPlans)
  * @route GET /plans/management
  * @description Rota para listar TODOS os planos de assinatura para o painel de gerenciamento.
  */
-router.get('/management', getPlansForManagement); // <--- ESTA É A NOVA ROTA
+router.get('/management', getPlansForManagement);
+
+/**
+ * @route POST /plans/management
+ * @description Rota para criar um novo plano de assinatura.
+ */
+router.post('/management', createPlan);
 
 export default router;

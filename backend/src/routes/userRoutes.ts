@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { changeUserPlan, createPurchase, getUserCurrentPlan } from '../controllers/userController';
+import { changeUserPlan, createPurchase, getUserCurrentPlan, getUserHistory } from '../controllers/userController';
 
 const router = Router();
 
@@ -21,5 +21,11 @@ router.post('/:userId/purchase', createPurchase);
  * @description Rota para gerenciar o upgrade ou downgrade de um plano de assinatura.
  */
 router.post('/:userId/change-plan', changeUserPlan);
+
+/**
+ * @route GET /users/:userId/history
+ * @description Rota para listar o histórico completo de compras de um usuário.
+ */
+router.get('/:userId/history', getUserHistory);
 
 export default router;

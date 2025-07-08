@@ -115,3 +115,22 @@ export const changeUserPlan = async (req: Request, res: Response) => { //
     return res.status(500).json({ message: error.message || 'Erro interno do servidor ao processar a alteração de plano.' });
   }
 };
+
+/**
+ * @function getUserHistory
+ * @description Controlador para a rota GET /users/:userId/history. Lista o histórico de compras de um usuário.
+ * @param {Request} req - Objeto de requisição do Express (espera 'userId' nos parâmetros).
+ * @param {Response} res - Objeto de resposta do Express.
+ * @returns {Promise<void>} Uma Promise que resolve quando a resposta é enviada ao cliente.
+ */
+export const getUserHistory = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const history = await userService.getUserPurchaseHistory(userId);
+    return res.status(200).json(history);
+  } catch (error: any) {
+    console.error('Erro no controlador `getUserHistory` ao buscar histórico:', error.message);
+    return res.status(500).json({ message: error.message || 'Erro interno do servidor ao buscar histórico de compras.' });
+  }
+};

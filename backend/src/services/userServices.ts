@@ -202,3 +202,43 @@ export const changeUserPlan = async (userId: string, changeData: ChangePlanDTO) 
     throw new Error(`Falha ao alterar o plano: ${error.message || 'Erro desconhecido'}`);
   }
 };
+
+/**
+ * @function getUserPurchaseHistory
+ * @description Lista todas as transações (compras, upgrades, downgrades, sucessos e falhas) de um usuário.
+ * @param {string} userId - O ID único do usuário.
+ * @returns {Promise<Array>} Uma Promise que resolve para um array de objetos PurchaseHistory.
+ * @throws {Error} Lança um erro se houver falha na comunicação com o banco de dados.
+ */
+export const getUserPurchaseHistory = async (userId: string) => { 
+  try {
+    const history = await prisma.purchaseHistory.findMany({
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        transactionDate: 'desc', // Ordena pelas mais recentes primeiro
+      },
+      select: {
+        id: true,
+        operationType: true,
+        paidValue: true,
+        paymentStatus: true,
+        transactionDate: true,
+        notes: true,
+        plan: {
+          select: {
+            id: true,
+            name: true,
+            monthlyValue: true,
+            annualValue: true,
+          },
+        },
+      },
+    });
+    return history;
+  } catch (error) {
+    console.error(`Erro no serviço 'getUserPurchaseHistory' para o usuário ${userId}:`, error);
+    throw new Error('Falha ao buscar histórico de compras do usuário.');
+  }
+};

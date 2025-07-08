@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPurchase, getUserCurrentPlan } from '../controllers/userController';
+import { changeUserPlan, createPurchase, getUserCurrentPlan } from '../controllers/userController';
 
 const router = Router();
 
@@ -15,5 +15,11 @@ router.get('/:userId/plan', getUserCurrentPlan)
  * @description Rota para processar a compra de um plano de assinatura.
  */
 router.post('/:userId/purchase', createPurchase);
+
+/**
+ * @route POST /users/:userId/change-plan
+ * @description Rota para gerenciar o upgrade ou downgrade de um plano de assinatura.
+ */
+router.post('/:userId/change-plan', changeUserPlan);
 
 export default router;

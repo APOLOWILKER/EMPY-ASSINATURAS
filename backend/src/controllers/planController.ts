@@ -60,7 +60,7 @@ export const createPlan = async (req: Request, res: Response) => {
       console.error('Erro de validação Zod ao criar plano:', error.errors);
       return res.status(400).json({
         message: 'Dados de plano inválidos.',
-        errors: error.errors, // Envia detalhes dos erros de validação
+        errors: error.errors,
       });
     }
   

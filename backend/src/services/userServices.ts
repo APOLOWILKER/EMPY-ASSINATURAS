@@ -4,6 +4,13 @@ import { ChangePlanDTO, CreatePurchaseDTO, CreditCardDetails } from '../schemas/
 
 const prisma = new PrismaClient();
 
+/**
+ * @param userId - O ID único do usuário.
+ * @description Busca o plano atual do usuário, retornando detalhes da assinatura ativa.
+ * @throws {Error} Lança um erro se houver falha na comunicação com o banco de dados ou se o usuário não tiver um plano ativo.
+ * @returns 
+ */
+
 export const getUserCurrentPlan = async (userId: string) => {
   try {
     const currentSubscription = await prisma.subscription.findFirst({
@@ -22,6 +29,15 @@ export const getUserCurrentPlan = async (userId: string) => {
   }
 };
 
+
+/**
+ * 
+ * @param userId - O ID único do usuário.
+ * @description Cria uma nova compra de plano de assinatura para o usuário, processando o pagamento e atualizando o histórico de compras.
+ * @throws {Error} Lança um erro se houver falha na comunicação com o banco de dados ou se os dados do plano forem inválidos.
+ * @returns Um objeto contendo o status da compra, mensagem, detalhes da assinatura e histórico de compras.
+ * @param purchaseData
+ */
 export const createPurchase = async (userId: string, purchaseData: CreatePurchaseDTO) => {
   const { planId, isMonthly, cardDetails, userEmail } = purchaseData;
 
@@ -79,6 +95,17 @@ export const createPurchase = async (userId: string, purchaseData: CreatePurchas
   }
 };
 
+/**
+ * @function simulatePayment
+ * @description Simula o processamento de um pagamento com base nos detalhes do cartão e no valor a ser pago.
+ * @param {CreditCardDetails} cardDetails - Detalhes do cartão de crédito.
+ * @param {Decimal} amount - Valor a ser pago.
+ * @param {boolean} isFirstPurchase - Indica se é a primeira compra do usuário.
+ * @returns {Object} Um objeto contendo o status do pagamento e notas adicionais.
+ * @throws {Error} Lança um erro se os detalhes do cartão forem inválidos ou se ocorrer um erro na simulação do pagamento.
+ * @description Esta função simula o processamento de um pagamento, retornando um status de pagamento e notas adicionais.
+ */
+
 const simulatePayment = (cardDetails: CreditCardDetails, amount: Decimal, isFirstPurchase: boolean) => {
     if (isFirstPurchase) {
         return { status: PaymentStatus.PAID, notes: 'Pagamento autorizado para a primeira compra.' };
@@ -92,12 +119,33 @@ const simulatePayment = (cardDetails: CreditCardDetails, amount: Decimal, isFirs
     }
 };
 
+/**
+ * @function getCardBrand
+ * @description Determina a bandeira do cartão com base no número do cartão.
+ * @param {string} cardNumber - Número do cartão de crédito.
+ * @returns {string} A bandeira do cartão (Visa, Mastercard, American Express ou Outros).
+ * @throws {Error} Lança um erro se o número do cartão for inválido ou não for reconhecido.
+ * @description Esta função verifica o número do cartão e retorna a bandera correspondente.
+ * As bandeiras são determinadas pelos prefixos dos números do cartão: 
+ * - Visa: começa com '4'
+ * - Mastercard: começa com '5'
+ * - American Express: começa com '34' ou '37'
+ * - Outros: qualquer outro número
+ */
 const getCardBrand = (cardNumber: string): string => {
   if (cardNumber.startsWith('4')) return 'Visa';
   if (cardNumber.startsWith('5')) return 'Mastercard';
   if (cardNumber.startsWith('34') || cardNumber.startsWith('37')) return 'American Express';
   return 'Outros';
 };
+
+/**
+ * @function changeUserPlan
+ * @description Altera o plano de assinatura de um usuário, processando o pagamento se necessário.
+ * @param {string} userId - O ID único do usuário.
+ * @param {ChangePlanDTO} changeData - Dados da alteração de plano, incluindo o novo plano, se é mensal ou anual, e detalhes do cartão.
+ * @returns {Promise<Object>} Uma Promise que resolve para um objeto contendo o status da alteração, mensagem, tipo de operação e detalhes da assinatura e histórico de compras.
+ */
 
 export const changeUserPlan = async (userId: string, changeData: ChangePlanDTO) => {
   const { newPlanId, isMonthly, cardDetails } = changeData;
@@ -240,5 +288,48 @@ export const getUserPurchaseHistory = async (userId: string) => {
   } catch (error) {
     console.error(`Erro no serviço 'getUserPurchaseHistory' para o usuário ${userId}:`, error);
     throw new Error('Falha ao buscar histórico de compras do usuário.');
+  }
+};
+
+/**
+ * @function getAllPurchasesForManagement
+ * @description Lista todas as transações (compras, upgrades, downgrades, sucessos e falhas) de TODOS os usuários para o gerenciamento.
+ * @returns {Promise<Array>} Uma Promise que resolve para um array de objetos PurchaseHistory.
+ * @throws {Error} Lança um erro se houver falha na comunicação com o banco de dados.
+ */
+export const getAllPurchasesForManagement = async () => { 
+  try {
+    const allHistory = await prisma.purchaseHistory.findMany({
+      orderBy: {
+        transactionDate: 'desc', 
+      },
+      select: {
+        id: true,
+        operationType: true,
+        paidValue: true,
+        paymentStatus: true,
+        transactionDate: true,
+        notes: true,
+        plan: {
+          select: {
+            id: true,
+            name: true,
+            monthlyValue: true,
+            annualValue: true,
+          },
+        },
+        user: {
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            }
+        }
+      },
+    });
+    return allHistory;
+  } catch (error) {
+    console.error(`Erro no serviço 'getAllPurchasesForManagement' ao buscar todas as compras:`, error);
+    throw new Error('Falha ao buscar todas as compras para o gerenciamento.');
   }
 };

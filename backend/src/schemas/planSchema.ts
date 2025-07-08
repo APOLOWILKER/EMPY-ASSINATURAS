@@ -18,37 +18,35 @@ export const createPlanSchema = z.object({
 
   // `monthlyValue` (Preço Mensal) - Opcional na requisição, mas um dos dois (mensal ou anual) deve existir
   monthlyValue: z.number().optional()
-    .refine(val => val === undefined || val >= 0, { // Garante que se for fornecido, seja >= 0
+    .refine(val => val === undefined || val >= 0, {
       message: 'O valor mensal deve ser um número não negativo.'
     }),
 
   // `annualValue` (Preço Anual) - Opcional na requisição, mas um dos dois (mensal ou anual) deve existir
   annualValue: z.number().optional()
-    .refine(val => val === undefined || val >= 0, { // Garante que se for fornecido, seja >= 0
+    .refine(val => val === undefined || val >= 0, {
       message: 'O valor anual deve ser um número não negativo.'
     }),
 
   // `discountPercent` (Desconto em porcentagem) - Opcional
   discountPercent: z.number().optional()
-    .refine(val => val === undefined || (val >= 0 && val <= 100), { // Entre 0 e 100
+    .refine(val => val === undefined || (val >= 0 && val <= 100), {
       message: 'O desconto deve ser um número entre 0 e 100.'
     }),
 
-  // `planBaseId` (Escolher plano base) - Necessário para associar configurações ou determinar isCustom
-  // O protótipo indica que é "Obrigatório" escolher um plano base
-  planBaseId: z.string().uuid('ID do plano base inválido.').optional(), // ID do plano base, se aplicável, assumindo que vem como UUID
+  // `planBaseId` (ID do Plano Base) - Opcional, mas se fornecido, deve ser um UUID válido
+  planBaseId: z.string().uuid('ID do plano base inválido.').optional(),
 
   // `isActive` e `isCustom` podem ser derivados ou opcionais para o admin criar um rascunho
-  isActive: z.boolean().optional().default(true), // Por padrão, um plano novo é ativo
-  isCustom: z.boolean().optional().default(true), // Planos criados por esta rota são customizados por padrão
+  isActive: z.boolean().optional().default(true), 
+  isCustom: z.boolean().optional().default(true), 
 
-  // `onlineCredits` e `offlineCredits` - Se não forem herdados do plano base, precisariam ser aqui.
-  // Assumimos que, por enquanto, eles vêm do plano base ou têm um default.
+  // `onlineCredits` e `offlineCredits` - Opcional, mas se fornecido, deve ser um número não negativo
   onlineCredits: z.number().optional(),
   offlineCredits: z.number().optional(),
 }).refine(data => data.monthlyValue !== undefined || data.annualValue !== undefined, {
   message: 'Pelo menos um dos valores (mensal ou anual) deve ser fornecido.',
-  path: ['monthlyValue', 'annualValue'], // Onde o erro será anexado
+  path: ['monthlyValue', 'annualValue'],
 });
 
 

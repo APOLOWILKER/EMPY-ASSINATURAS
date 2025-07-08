@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ZodError } from "zod";
-import { createPurchaseSchema } from "../schemas/purchaseSchemas";
+import { createPurchaseSchema } from "../schemas/purchaseSchema";
 import * as userService from '../services/userServices';
 
 

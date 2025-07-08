@@ -16,3 +16,15 @@ export const createPurchaseSchema = z.object({
 
 export type CreatePurchaseDTO = z.infer<typeof createPurchaseSchema>;
 export type CreditCardDetails = z.infer<typeof creditCardSchema>;
+
+/**
+ * @description Schema Zod para validar os dados de entrada ao alterar um plano (para POST /change-plan).
+ */
+export const changePlanSchema = z.object({
+  newPlanId: z.string().uuid('ID do novo plano inválido.'),
+  isMonthly: z.boolean(), // true para mensal, false para anual
+  // cardDetails é opcional aqui, pois a lógica de negócio decidirá se o pagamento é necessário.
+  cardDetails: z.optional(z.lazy(() => creditCardSchema)),
+});
+
+export type ChangePlanDTO = z.infer<typeof changePlanSchema>;

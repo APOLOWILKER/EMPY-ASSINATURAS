@@ -1,10 +1,17 @@
-import { Outlet } from 'react-router-dom';
+import React from 'react';
+import './App.css';
 
-export function App() {
-  return (
-    <div className="app-container">
-      {/* Outlet renderizará as páginas filhas */}
-      <Outlet />
-    </div>
-  );
+
+interface AppProps {
+  children: React.ReactNode;
 }
+
+const App = ({ children }: AppProps) => {
+  return ( 
+      <>
+        {children}
+      </>
+  );
+};
+
+export default App;

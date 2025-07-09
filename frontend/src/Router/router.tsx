@@ -1,26 +1,21 @@
-import { AccessPlans } from '@/pages/AccessPlans'
-import { createBrowserRouter } from 'react-router-dom'
-import { App } from '../App'
-import { MyPlan } from '../pages/MyPlan'
-import { Payment } from "../pages/PaymentFlow"
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <AccessPlans />,
-      },
-      {
-        path: 'pagamento',
-        element: <Payment />,
-      },
-      {
-        path: 'meu-plano',
-        element: <MyPlan />,
-      }
-    ]
-  }
-])
+
+import AccessPlansPage from '../pages/AccessPlans';
+
+
+import App from '../App';
+
+const AppRouter = () => {
+  return (
+    <Router>
+      <App>
+        <Routes>
+          <Route path="/" element={<AccessPlansPage />} />
+        </Routes>
+      </App>
+    </Router>
+  );
+};
+
+export default AppRouter;

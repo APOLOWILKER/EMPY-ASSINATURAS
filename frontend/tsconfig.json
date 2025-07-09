@@ -7,7 +7,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "types": ["vite/client"],
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["src/*"],
       "@schemas/*": ["src/schemas/*"],

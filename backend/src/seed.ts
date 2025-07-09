@@ -1,6 +1,4 @@
-// backend/prisma/seed.ts - Conteúdo COMPLETO e CORRIGIDO
-
-import { PrismaClient } from '../src/generated/prisma'; // Caminho corrigido para o PrismaClient
+import { PrismaClient } from '../src/generated/prisma';
 
 const prisma = new PrismaClient();
 
@@ -19,9 +17,6 @@ async function main() {
     },
   });
   console.log(`Test user created/updated: ${testUser.name} (${testUser.id})`);
-
-  // 2. Criar/Atualizar Planos (Light, Standard, Pro)
-  // Usamos findUnique + create/update para contornar o erro de tipagem TS2322 com 'upsert' e 'name' no where para Plan.
 
   // Plano Light
   let lightPlan = await prisma.plan.findFirst({ where: { name: 'Light' } });

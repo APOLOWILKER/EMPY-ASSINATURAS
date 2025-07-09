@@ -64,7 +64,7 @@ export interface CreatePurchaseDTO {
 export interface ChangePlanDTO {
   newPlanId: string;
   isMonthly: boolean;
-  cardDetails?: CreditCardDetails;
+  cardDetails?: CreditCardDetails; // Opcional, pois algumas alterações podem não precisar de pagamento
 }
 
 // Interface para o resultado de operações de compra/alteração do backend
@@ -72,6 +72,6 @@ export interface PurchaseResult {
   message: string;
   subscription?: Subscription;
   purchaseHistory: PurchaseHistory;
-  status: 'success' | 'failed'; // Status da operação
+  status: string; // 'success' or 'failed' (do retorno da API)
   operationType?: 'PURCHASE' | 'UPGRADE' | 'DOWNGRADE'; // Tipo de operação
 }

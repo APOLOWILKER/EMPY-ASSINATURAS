@@ -1,14 +1,22 @@
 import SizeLogoEmpy from "@/assets/SizeLogoEmpy.svg";
-import { usePlans } from "../../hooks/usePlans"; // <-- O HOOK usePlans É CHAMADO AQUI!
-import PlanCard from "./components/Card"; // Componente de um único card
+import { useNavigate } from "react-router";
+import { Plan } from "types/plan";
+import { usePlans } from "../../hooks/usePlans";
+import PlanCard from "./components/Card";
 import { Header } from "./components/Header";
 
 const AccessPlansPage = () => {
-  const { plans, loading, error, refetch } = usePlans(); // <-- Chamada do hook aqui!
+  const { plans, loading, error, refetch } = usePlans();
+
+  const navigate = useNavigate();
 
   if (loading) {
     return <p className="text-center mt-8">Carregando planos...</p>;
   }
+
+  const handleSubscribe = (plan: Plan, isMonthly: boolean) => {
+    navigate('/checkout', { state: { plan, isMonthly } }); // <-- Aqui é usado
+  };
 
   if (error) {
     return (
@@ -38,7 +46,11 @@ const AccessPlansPage = () => {
 
         <div className="flex flex-wrap justify-center gap-4">
           {plans.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} /> // Passa cada 'plan' para o PlanCard
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              onSubscribe={handleSubscribe}
+            />
           ))}
         </div>
       </div>

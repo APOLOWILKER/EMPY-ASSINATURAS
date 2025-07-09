@@ -1,16 +1,17 @@
-// frontend/src/types/index.ts
-
-// --- Interfaces para Modelos e DTOs (alinhadas ao backend) ---
+// frontend/src/types/index.ts - CONTEÚDO COMPLETO E CORRIGIDO
 
 export interface Plan {
   id: string;
   name: string;
   description: string | null;
-  monthlyValue: number; // Converte de Decimal (string) para number
-  annualValue: number | null; // Converte de Decimal (string) para number
+  monthlyValue: number;
+  annualValue: number | null;
   onlineCredits: number;
   offlineCredits: number;
   isCustom: boolean;
+  isActive: boolean; // <--- ADICIONADO
+  createdAt: string; // <--- ADICIONADO
+  updatedAt: string; // <--- ADICIONADO
 }
 
 export interface Subscription {
@@ -23,8 +24,8 @@ export interface Subscription {
   endDate: string | null;
   lastChargeDate: string | null;
   paymentMethod: string | null;
-  plan?: Plan; // Pode ser incluído em algumas respostas
-  user?: User; // Pode ser incluído em algumas respostas
+  plan?: Plan;
+  user?: User;
 }
 
 export interface PurchaseHistory {
@@ -32,13 +33,13 @@ export interface PurchaseHistory {
   userId: string;
   planId: string;
   operationType: 'PURCHASE' | 'UPGRADE' | 'DOWNGRADE';
-  paidValue: number; // Converte de Decimal (string) para number
+  paidValue: number;
   paymentStatus: 'PAID' | 'REJECTED_INSUFFICIENT_FUNDS' | 'UNAUTHORIZED' | 'GENERAL_FAILURE' | 'PENDING';
   transactionDate: string;
   receiptUrl: string | null;
   notes: string | null;
-  plan?: Plan; // Pode ser incluído em algumas respostas
-  user?: User; // Pode ser incluído em algumas respostas
+  plan?: Plan;
+  user?: User;
 }
 
 export interface User {
@@ -64,14 +65,13 @@ export interface CreatePurchaseDTO {
 export interface ChangePlanDTO {
   newPlanId: string;
   isMonthly: boolean;
-  cardDetails?: CreditCardDetails; // Opcional, pois algumas alterações podem não precisar de pagamento
+  cardDetails?: CreditCardDetails;
 }
 
-// Interface para o resultado de operações de compra/alteração do backend
 export interface PurchaseResult {
   message: string;
   subscription?: Subscription;
   purchaseHistory: PurchaseHistory;
-  status: string; // 'success' or 'failed' (do retorno da API)
-  operationType?: 'PURCHASE' | 'UPGRADE' | 'DOWNGRADE'; // Tipo de operação
+  status: string;
+  operationType?: 'PURCHASE' | 'UPGRADE' | 'DOWNGRADE';
 }

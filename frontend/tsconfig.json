@@ -9,14 +9,17 @@
     "types": ["vite/client"],
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"],
-      "@schemas/*": ["src/schemas/*"],
-      "@components/*": ["src/components/*"]
+      "@/*": ["./*"],
+      "@schemas/*": ["./schemas/*"],
+      "@components/*": ["./components/*"]
     },
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ChangePlanDTO, CreatePurchaseDTO, Plan, PurchaseHistory, PurchaseResult, Subscription } from '../types';
 
-const API_BASE_URL = 'http:
+const API_BASE_URL = 'http://localhost:3001';
 
 const parseDecimalFields = (obj: unknown): unknown => {
   if (obj === null || typeof obj !== 'object') return obj; 

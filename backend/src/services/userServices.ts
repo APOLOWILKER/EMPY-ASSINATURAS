@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 export const getUserCurrentPlan = async (userId: string) => {
   try {
     const currentSubscription = await prisma.subscription.findFirst({
-      where: { userId: userId, status: SubscriptionStatus.ACTIVE }, 
+      where: { userId: userId, status: SubscriptionStatus.ACTIVE }, // <--- USANDO ENUM
       orderBy: { startDate: 'desc' },
       select: {
         id: true, isMonthly: true, status: true, endDate: true, lastChargeDate: true, paymentMethod: true,
@@ -75,12 +75,12 @@ export const createPurchase = async (userId: string, purchaseData: CreatePurchas
 
     if (paymentStatus === PaymentStatus.PAID) {
       await prisma.subscription.updateMany({
-        where: { userId: userId, status: SubscriptionStatus.ACTIVE }, 
-        data: { status: SubscriptionStatus.INACTIVE, endDate: new Date() }, 
+        where: { userId: userId, status: SubscriptionStatus.ACTIVE }, // <--- USANDO ENUM
+        data: { status: SubscriptionStatus.INACTIVE, endDate: new Date() }, // <--- USANDO ENUM
       });
       const newSubscription = await prisma.subscription.create({
         data: {
-          userId: userId, planId: plan.id, isMonthly: isMonthly, status: SubscriptionStatus.ACTIVE, 
+          userId: userId, planId: plan.id, isMonthly: isMonthly, status: SubscriptionStatus.ACTIVE, // <--- USANDO ENUM
           startDate: new Date(), lastChargeDate: new Date(),
           paymentMethod: `${getCardBrand(cardDetails.cardNumber)} - final ${cardDetails.cardNumber.slice(-4)}`,
         },
@@ -265,7 +265,7 @@ export const getUserPurchaseHistory = async (userId: string) => {
         userId: userId,
       },
       orderBy: {
-        transactionDate: 'desc', 
+        transactionDate: 'desc', // Ordena pelas mais recentes primeiro
       },
       select: {
         id: true,

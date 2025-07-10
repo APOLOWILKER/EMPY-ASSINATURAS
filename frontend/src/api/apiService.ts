@@ -6,21 +6,21 @@ const API_BASE_URL = 'http://localhost:3001';
 const parseDecimalFields = (obj: unknown): unknown => {
   if (obj === null || typeof obj !== 'object') return obj; 
 
-  const newObj = { ...obj as Record<string, unknown> }; 
+  const newObj = { ...obj as Record<string, unknown> }; // <--- Cast para Record<string, unknown> para spread
 
 
   if (typeof newObj.monthlyValue === 'string') {
     newObj.monthlyValue = parseFloat(newObj.monthlyValue);
   }
-  if (newObj.annualValue !== undefined && newObj.annualValue !== null) { 
-    if (typeof newObj.annualValue === 'string') { 
+  if (newObj.annualValue !== undefined && newObj.annualValue !== null) { // Adicionado check de undefined
+    if (typeof newObj.annualValue === 'string') { // Só converte se for string
       newObj.annualValue = parseFloat(newObj.annualValue);
     }
   }
   if (typeof newObj.paidValue === 'string') {
     newObj.paidValue = parseFloat(newObj.paidValue);
   }
-  
+  // Recursivamente aplica para objetos aninhados (plan, user, subscription, purchaseHistory)
   if (newObj.plan) { newObj.plan = parseDecimalFields(newObj.plan); }
   if (newObj.user) { newObj.user = parseDecimalFields(newObj.user); }
   if (newObj.subscription) { newObj.subscription = parseDecimalFields(newObj.subscription); }
@@ -30,7 +30,7 @@ const parseDecimalFields = (obj: unknown): unknown => {
 };
 
 
-
+// --- Funções de API ---
 
 export const getPlans = async (): Promise<Plan[]> => {
   try {
@@ -39,11 +39,11 @@ export const getPlans = async (): Promise<Plan[]> => {
   } catch (error: unknown) {
     if (error instanceof Error) {
         console.error('Erro ao chamar a API GET /plans:', error.message);
-        throw new Error(error.message); 
+        throw new Error(error.message); // Lança o erro original ou uma mensagem específica
     } else if (axios.isAxiosError(error) && error.response?.data?.message) {
         throw new Error(error.response.data.message);
     }
-    throw new Error('Falha ao buscar planos.'); 
+    throw new Error('Falha ao buscar planos.'); // Mensagem genérica para erros desconhecidos
   }
 };
 

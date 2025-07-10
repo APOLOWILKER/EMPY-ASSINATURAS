@@ -1,4 +1,4 @@
-
+// frontend/src/types/index.ts - CONTEÚDO COMPLETO E CORRIGIDO
 
 export interface Plan {
   id: string;
@@ -9,9 +9,9 @@ export interface Plan {
   onlineCredits: number;
   offlineCredits: number;
   isCustom: boolean;
-  isActive: boolean; 
-  createdAt: string; 
-  updatedAt: string; 
+  isActive: boolean; // <--- ADICIONADO
+  createdAt: string; // <--- ADICIONADO
+  updatedAt: string; // <--- ADICIONADO
 }
 
 export interface Subscription {

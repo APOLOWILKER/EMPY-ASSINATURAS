@@ -15,7 +15,7 @@ const AccessPlansPage = () => {
   }
 
   const handleSubscribe = (plan: Plan, isMonthly: boolean) => {
-    navigate('/checkout', { state: { plan, isMonthly } }); 
+    navigate('/checkout', { state: { plan, isMonthly } }); // <-- Aqui é usado
   };
 
   if (error) {

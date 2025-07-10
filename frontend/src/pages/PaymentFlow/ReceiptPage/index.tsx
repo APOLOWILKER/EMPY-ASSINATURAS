@@ -52,7 +52,7 @@ const ReceiptPage = () => {
             </div>
           )}
           <button
-            onClick={() => navigate('/my-plan')} 
+            onClick={() => navigate('/my-plan')} // Supondo que você terá uma rota /my-plan
             className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Ir para meu plano

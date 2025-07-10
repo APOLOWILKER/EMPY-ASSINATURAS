@@ -22,8 +22,8 @@ export type CreditCardDetails = z.infer<typeof creditCardSchema>;
  */
 export const changePlanSchema = z.object({
   newPlanId: z.string().uuid('ID do novo plano inválido.'),
-  isMonthly: z.boolean(), 
-  
+  isMonthly: z.boolean(), // true para mensal, false para anual
+  // cardDetails é opcional aqui, pois a lógica de negócio decidirá se o pagamento é necessário.
   cardDetails: z.optional(z.lazy(() => creditCardSchema)),
 });
 

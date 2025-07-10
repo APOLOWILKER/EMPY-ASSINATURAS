@@ -1,156 +1,156 @@
-# Empy Assinaturas - Subscription Management System
+# Empy Assinaturas - Sistema de Gerenciamento de Assinaturas
 
-This project is a full-stack application for managing user subscriptions, built with a React frontend and a Node.js (Express) backend.
+Este projeto é uma aplicação full-stack para gerenciar assinaturas de usuários, construída com um frontend em React e um backend em Node.js (Express).
 
-## Tech Stack
+## Tecnologias
 
 -   **Frontend:** React, TypeScript, Vite, Tailwind CSS
 -   **Backend:** Node.js, Express, TypeScript, Prisma
--   **Database:** PostgreSQL
+-   **Banco de Dados:** PostgreSQL
 
-## Prerequisites
+## Pré-requisitos
 
--   **Node.js:** v18.x or later
--   **npm:** v8.x or later (or your preferred package manager)
--   **Git:** For cloning the repository
--   **PostgreSQL:** A running instance of PostgreSQL server
+-   **Node.js:** v18.x ou superior
+-   **npm:** v8.x ou superior (ou seu gerenciador de pacotes preferido)
+-   **Git:** Para clonar o repositório
+-   **PostgreSQL:** Uma instância do servidor PostgreSQL em execução
 
 ---
 
-## Getting Started
+## Como Começar
 
-### 1. Clone the Repository
+### 1. Clone o Repositório
 
-First, clone the project to your local machine:
+Primeiro, clone o projeto para sua máquina local:
 
 ```bash
-git clone <repository-url>
+git clone <url-do-repositorio>
 cd empy-assinaturas
 ```
 
-### 2. Backend Setup
+### 2. Configuração do Backend
 
-The backend server handles business logic, database interactions, and API endpoints.
+O servidor backend gerencia a lógica de negócios, as interações com o banco de dados e os endpoints da API.
 
-**a. Navigate to the backend directory:**
+**a. Navegue até o diretório do backend:**
 
 ```bash
 cd backend
 ```
 
-**b. Install dependencies:**
+**b. Instale as dependências:**
 
 ```bash
 npm install
 ```
 
-**c. Set up environment variables:**
+**c. Configure as variáveis de ambiente:**
 
-Create a `.env` file in the `backend` directory by copying the example file:
+Crie um arquivo `.env` no diretório `backend` copiando o arquivo de exemplo:
 
 ```bash
 cp env.example.env .env
 ```
 
-Now, edit the `.env` file and add your PostgreSQL database connection string:
+Agora, edite o arquivo `.env` e adicione a sua string de conexão do banco de dados PostgreSQL:
 
 ```
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DATABASE_URL="postgresql://USUARIO:SENHA@HOST:PORTA/BANCO_DE_DADOS"
 ```
 
-**d. Run database migrations:**
+**d. Execute as migrações do banco de dados:**
 
-This command will set up the database schema based on the Prisma model.
+Este comando irá configurar o schema do banco de dados com base no modelo do Prisma.
 
 ```bash
 npx prisma migrate dev --name init
 ```
 
-**e. (Optional) Seed the database:**
+**e. (Opcional) Popule o banco de dados:**
 
-To populate the database with initial data (e.g., test plans), run:
+Para popular o banco de dados com dados iniciais (ex: planos de teste), execute:
 
 ```bash
 npm run prisma:seed
 ```
 
-**f. Start the development server:**
+**f. Inicie o servidor de desenvolvimento:**
 
 ```bash
 npm run dev
 ```
 
-The backend will be running on `http://localhost:3001`.
+O backend estará rodando em `http://localhost:3001`.
 
 ---
 
-### 3. Frontend Setup
+### 3. Configuração do Frontend
 
-The frontend provides the user interface for plan selection and checkout.
+O frontend fornece a interface de usuário para a seleção de planos e o checkout.
 
-**a. Navigate to the frontend directory:**
+**a. Navegue até o diretório do frontend:**
 
 ```bash
 cd ../frontend
 ```
 
-**b. Install dependencies:**
+**b. Instale as dependências:**
 
 ```bash
 npm install
 ```
 
-**c. Start the development server:**
+**c. Inicie o servidor de desenvolvimento:**
 
 ```bash
 npm run dev
 ```
 
-The frontend application will be available at `http://localhost:5173`.
+A aplicação frontend estará disponível em `http://localhost:5173`.
 
 ---
 
-## Backend API Routes
+## Rotas da API do Backend
 
-The server exposes the following RESTful endpoints:
+O servidor expõe os seguintes endpoints RESTful:
 
-### Plans
+### Planos
 
 -   `GET /plans`
-    -   **Description:** Retrieves a list of all active subscription plans available for customers.
-    -   **Response:** An array of plan objects.
+    -   **Descrição:** Retorna uma lista de todos os planos de assinatura ativos e disponíveis para os clientes.
+    -   **Resposta:** Um array de objetos de plano.
 
 -   `GET /plans/management`
-    -   **Description:** Retrieves a list of *all* plans (both active and inactive) for internal management purposes.
-    -   **Response:** An array of plan objects with more detailed fields.
+    -   **Descrição:** Retorna uma lista de *todos* os planos (ativos e inativos) para fins de gerenciamento interno.
+    -   **Resposta:** Um array de objetos de plano com campos mais detalhados.
 
 -   `POST /plans/management`
-    -   **Description:** Creates a new subscription plan.
-    -   **Body:** A JSON object with plan details (name, values, credits, etc.).
-    -   **Response:** The newly created plan object.
+    -   **Descrição:** Cria um novo plano de assinatura.
+    -   **Corpo (Body):** Um objeto JSON com os detalhes do plano (nome, valores, créditos, etc.).
+    -   **Resposta:** O objeto do plano recém-criado.
 
-### Users & Purchases
+### Usuários e Compras
 
 -   `GET /users/:userId/plan`
-    -   **Description:** Fetches the current active subscription for a specific user.
-    -   **Response:** The user's current subscription object or 404 if not found.
+    -   **Descrição:** Busca a assinatura ativa atual para um usuário específico.
+    -   **Resposta:** O objeto da assinatura atual do usuário ou 404 se não for encontrado.
 
 -   `POST /users/:userId/purchase`
-    -   **Description:** Processes a new plan purchase for a user.
-    -   **Body:** A JSON object containing `planId`, `isMonthly`, and `cardDetails`.
-    -   **Response:** A result object with the status of the purchase and transaction details.
+    -   **Descrição:** Processa a compra de um novo plano para um usuário.
+    -   **Corpo (Body):** Um objeto JSON contendo `planId`, `isMonthly` e `cardDetails`.
+    -   **Resposta:** Um objeto de resultado com o status da compra e detalhes da transação.
 
 -   `POST /users/:userId/change-plan`
-    -   **Description:** Handles a plan upgrade or downgrade for a user.
-    -   **Body:** A JSON object containing `newPlanId`, `isMonthly`, and optional `cardDetails`.
-    -   **Response:** A result object with the status of the change and transaction details.
+    -   **Descrição:** Gerencia o upgrade ou downgrade de plano para um usuário.
+    -   **Corpo (Body):** Um objeto JSON contendo `newPlanId`, `isMonthly` e `cardDetails` (opcional).
+    -   **Resposta:** Um objeto de resultado com o status da alteração e detalhes da transação.
 
 -   `GET /users/:userId/history`
-    -   **Description:** Retrieves the complete purchase and transaction history for a specific user.
-    -   **Response:** An array of purchase history records.
+    -   **Descrição:** Retorna o histórico completo de compras e transações para um usuário específico.
+    -   **Resposta:** Um array de registros do histórico de compras.
 
-### Management
+### Gerenciamento
 
 -   `GET /purchases/management`
-    -   **Description:** Retrieves the complete purchase history for *all* users for management and reporting.
-    -   **Response:** An array of all purchase history records.
+    -   **Descrição:** Retorna o histórico de compras completo de *todos* os usuários para gerenciamento e relatórios.
+    -   **Resposta:** Um array com todos os registros do histórico de compras.

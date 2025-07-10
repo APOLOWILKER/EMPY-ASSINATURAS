@@ -1,16 +1,9 @@
-import { Plan } from "types/plan";
 import { z } from 'zod';
-
-
-export interface PlanCardProps {
-  plan: Plan;
-  onSubscribe: (plan: Plan, isMonthly: boolean) => void;
-}
 
 export const PlanSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, 'Nome do plano é obrigatório.'),
-  description: z.string().optional(),
+  description: z.string().optional().nullable(),
 
   monthlyValue: z.preprocess(
     (val) => {

@@ -1,6 +1,11 @@
 import PolygonGreen from "../../../assets/PolygonGreen.svg";
 import PolygonRed from "../../../assets/PolygonRed.svg";
-import { PlanCardProps } from '../schemas/planCardSchemas';
+import { Plan } from '../../../types/plan';
+
+export interface PlanCardProps {
+  plan: Plan;
+  onSubscribe: (plan: Plan, isMonthly: boolean) => void;
+}
 
 
 const CheckCircleIcon = () => (

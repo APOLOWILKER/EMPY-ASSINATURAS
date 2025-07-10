@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { usePaymentForm } from '../../hooks/usePaymentForm';
@@ -15,18 +15,19 @@ const PaymentFlowPage = () => {
 
   const { selectedPlan, isMonthly } = usePlanSelection();
 
+  const handlePaymentError = (message: string | null) => {
+    setErrorMessage(message);
+    setSuccessMessage(null);
+  };
+
   const handlePaymentSuccess = (result: PurchaseResult, plan: Plan) => {
     setErrorMessage(null);
     setSuccessMessage(result.message);
     navigate('/receipt', { state: { result, plan } });
   };
 
-  const handlePaymentError = (message: string | null) => {
-    setErrorMessage(message);
-    setSuccessMessage(null);
-  };
 
-  const { cardDetails, handleCardChange, handleSubmit, loading } = usePaymentForm({
+  const { cardDetails, handleCardChange: handleCardChangeFromHook, handleSubmit, loading } = usePaymentForm({
     userId: userId,
     planId: selectedPlan?.id || '',
     isMonthly: isMonthly,
@@ -34,6 +35,19 @@ const PaymentFlowPage = () => {
     onError: handlePaymentError,
     selectedPlan: selectedPlan!,
   });
+
+  const handleCardChangeWithFormatting = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let { name, value } = e.target;
+
+    if (name === 'expiryDate') {
+      value = value.replace(/\D/g, '');
+      if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+    }
+
+    handleCardChangeFromHook({ target: { name, value } } as React.ChangeEvent<HTMLInputElement>);
+  };
 
   if (!selectedPlan) { return <div className="text-center p-5">Carregando detalhes do plano...</div>; }
 
@@ -68,26 +82,27 @@ const PaymentFlowPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div className="mb-4">
               <label htmlFor="holderName" className="block text-gray-700 text-sm font-bold mb-2">Nome do Titular:</label>
-              <input type="text" id="holderName" name="holderName" value={cardDetails.holderName} onChange={handleCardChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" autoComplete="cc-name" />
+              <input type="text" id="holderName" name="holderName" value={cardDetails.holderName} onChange={handleCardChangeWithFormatting} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" autoComplete="cc-name" />
             </div>
 
             <div className="mb-4">
               <label htmlFor="cardNumber" className="block text-gray-700 text-sm font-bold mb-2">Número do Cartão (16 dígitos):</label>
-              <input type="text" id="cardNumber" name="cardNumber" value={cardDetails.cardNumber} onChange={handleCardChange} maxLength={16} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-number" />
+              <input type="text" id="cardNumber" name="cardNumber" value={cardDetails.cardNumber} onChange={handleCardChangeWithFormatting} maxLength={16} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-number" />
             </div>
 
             <div className="flex space-x-4 mb-6">
               <div className="w-1/2">
                 <label htmlFor="expiryDate" className="block text-gray-700 text-sm font-bold mb-2">Validade (MM/AA):</label>
-                <input type="text" id="expiryDate" name="expiryDate" value={cardDetails.expiryDate} onChange={handleCardChange} placeholder="MM/YY" maxLength={5} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-exp" />
+                <input type="text" id="expiryDate" name="expiryDate" value={cardDetails.expiryDate} onChange={handleCardChangeWithFormatting} placeholder="MM/YY" maxLength={5} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-exp" />
               </div>
               <div className="w-1/2">
                 <label htmlFor="cvv" className="block text-gray-700 text-sm font-bold mb-2">CVV (3 dígitos):</label>
-                <input type="text" id="cvv" name="cvv" value={cardDetails.cvv} onChange={handleCardChange} maxLength={3} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-csc" />
+                <input type="text" id="cvv" name="cvv" value={cardDetails.cvv} onChange={handleCardChangeWithFormatting} maxLength={3} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autoComplete="cc-csc" />
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+            <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-700 
+            text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
               {loading ? 'Processando...' : 'Continuar'}
             </button>
           </form>

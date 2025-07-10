@@ -3,22 +3,22 @@ import { PrismaClient } from '../src/generated/prisma';
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Criar/Atualizar Usuário de Teste (John Doe)
-  // Usamos upsert aqui, que geralmente funciona bem para Users com 'email' @unique
+  
+  
   const testUser = await prisma.user.upsert({
-    where: { email: 'john.doe@example.com' }, // Usa o campo 'email' conforme seu schema
+    where: { email: 'john.doe@example.com' }, 
     update: {
       name: 'John Doe',
     },
     create: {
-      id: 'a1b2c3d4-e5f6-7890-1234-567890abcdef', // UUID fixo para consistência
+      id: 'a1b2c3d4-e5f6-7890-1234-567890abcdef', 
       name: 'John Doe',
       email: 'john.doe@example.com',
     },
   });
   console.log(`Test user created/updated: ${testUser.name} (${testUser.id})`);
 
-  // Plano Light
+  
   let lightPlan = await prisma.plan.findFirst({ where: { name: 'Light' } });
   if (!lightPlan) {
     lightPlan = await prisma.plan.create({
@@ -35,9 +35,9 @@ async function main() {
     });
     console.log('Light plan created.');
   } else {
-    // Se o plano Light já existe, opcionalmente atualizamos seus dados
+    
     lightPlan = await prisma.plan.update({
-      where: { id: lightPlan.id }, // Usa o ID encontrado para atualizar
+      where: { id: lightPlan.id }, 
       data: {
         description: 'Ganhe 2 meses de desconto na contratação anual com 12 meses de fidelidade',
         monthlyValue: 157.00,
@@ -51,7 +51,7 @@ async function main() {
     console.log('Light plan updated.');
   }
 
-  // Plano Standard
+  
   let standardPlan = await prisma.plan.findFirst({ where: { name: 'Standard' } });
   if (!standardPlan) {
     standardPlan = await prisma.plan.create({
@@ -83,7 +83,7 @@ async function main() {
     console.log('Standard plan updated.');
   }
 
-  // Plano Pro
+  
   let proPlan = await prisma.plan.findFirst({ where: { name: 'Pro' } });
   if (!proPlan) {
     proPlan = await prisma.plan.create({
@@ -93,7 +93,7 @@ async function main() {
         monthlyValue: 347.00,
         annualValue: 289.92,
         onlineCredits: 30,
-        offlineCredits: -1, // -1 para ilimitado
+        offlineCredits: -1, 
         isActive: true,
         isCustom: false,
       },

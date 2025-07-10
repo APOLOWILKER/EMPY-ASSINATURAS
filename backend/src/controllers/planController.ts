@@ -55,7 +55,7 @@ export const createPlan = async (req: Request, res: Response) => {
     return res.status(201).json(newPlan);
 
   } catch (error: any) {
-    // Tratamento específico para erros de validação do Zod
+    
     if (error instanceof ZodError) {
       console.error('Erro de validação Zod ao criar plano:', error.errors);
       return res.status(400).json({

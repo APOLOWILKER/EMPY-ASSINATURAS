@@ -38,7 +38,7 @@ export const createPurchase = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const purchaseData = createPurchaseSchema.parse(req.body); // Validação Zod
+    const purchaseData = createPurchaseSchema.parse(req.body); 
 
     const result = await userService.createPurchase(userId, purchaseData);
 
@@ -49,7 +49,7 @@ export const createPurchase = async (req: Request, res: Response) => {
         purchaseHistory: result.purchaseHistory,
       });
     } else {
-      return res.status(402).json({ // 402 Payment Required
+      return res.status(402).json({ 
         message: result.message,
         purchaseHistory: result.purchaseHistory,
       });
@@ -75,15 +75,15 @@ export const createPurchase = async (req: Request, res: Response) => {
  * @param {Response} res - Objeto de resposta do Express.
  * @returns {Promise<void>} Uma Promise que resolve quando a resposta é enviada ao cliente.
  */
-export const changeUserPlan = async (req: Request, res: Response) => { // 
-  const { userId } = req.params; // 
+export const changeUserPlan = async (req: Request, res: Response) => { 
+  const { userId } = req.params; 
 
   try {
   
-    const changeData = changePlanSchema.parse(req.body); // 
+    const changeData = changePlanSchema.parse(req.body); 
 
     
-    const result = await userService.changeUserPlan(userId, changeData); // 
+    const result = await userService.changeUserPlan(userId, changeData); 
 
     
     if (result.status === 'success') {

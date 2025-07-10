@@ -15,11 +15,11 @@ model Plan {
   description     String?
   monthlyValue    Decimal? @map("monthly_value")
   annualValue     Decimal? @map("annual_value")
-  discountPercent Int?     @map("discount_percent") // Porcentagem de desconto (para planos personalizados)
-  onlineCredits   Int      @map("online_credits") // Número de créditos online
-  offlineCredits  Int      @map("offline_credits") // Número de créditos offline (-1 para ilimitado, ou um grande valor)
-  isActive        Boolean  @default(true) // Se o plano está ativo para novas assinaturas
-  isCustom        Boolean  @default(false) // Indica se é um plano base (false) ou personalizado (true)
+  discountPercent Int?     @map("discount_percent")
+  onlineCredits   Int      @map("online_credits")
+  offlineCredits  Int      @map("offline_credits")
+  isActive        Boolean  @default(true)
+  isCustom        Boolean  @default(false)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -48,14 +48,14 @@ model User {
 // Table: Subscriptions
 model Subscription {
   id             String             @id @default(uuid())
-  userId         String             @map("user_id") // Foreign key for User
-  planId         String             @map("plan_id") // Foreign key for Plan
+  userId         String             @map("user_id")
+  planId         String             @map("plan_id")
   isMonthly      Boolean            @default(true) @map("is_monthly")
   status         SubscriptionStatus
   startDate      DateTime           @default(now()) @map("start_date")
   endDate        DateTime?          @map("end_date")
-  lastChargeDate DateTime?          @map("last_charge_date") // Data do último pagamento
-  paymentMethod  String?            @map("payment_method") // Método de pagamento utilizado
+  lastChargeDate DateTime?          @map("last_charge_date")
+  paymentMethod  String?            @map("payment_method")
 
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -77,9 +77,9 @@ model PurchaseHistory {
   id              String        @id @default(uuid())
   userId          String        @map("user_id")
   planId          String        @map("plan_id")
-  operationType   OperationType @map("operation_type") // Uses the 'OperationType' Enum below
+  operationType   OperationType @map("operation_type")
   paidValue       Decimal       @map("paid_value")
-  paymentStatus   PaymentStatus @map("payment_status") // Uses the 'PaymentStatus' Enum below
+  paymentStatus   PaymentStatus @map("payment_status")
   transactionDate DateTime      @default(now()) @map("transaction_date")
   receiptUrl      String?       @map("receipt_url")
   notes           String?
@@ -100,8 +100,8 @@ enum OperationType {
 // Enum for 'paymentStatus' field in the PurchaseHistory table
 enum PaymentStatus {
   PAID
-  REJECTED_INSUFFICIENT_FUNDS // Recusado - Sem limite (conforme protótipo)
-  UNAUTHORIZED // Não autorizado (conforme protótipo)
-  GENERAL_FAILURE // Falha geral (outros erros de pagamento)
-  PENDING // Pagamento pendente (ex: processando)
+  REJECTED_INSUFFICIENT_FUNDS
+  UNAUTHORIZED
+  GENERAL_FAILURE
+  PENDING
 }
